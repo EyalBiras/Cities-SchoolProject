@@ -10,11 +10,42 @@ from PIL import Image, ImageFilter
 from log_viewer import LogViewer
 from game_render.images import BLACK, BLUE, RED, GREEN
 from images import get_group_image
-from cities_game.images import DECORATIONS_DIRECTORY, NEUTRAL_CAPITAL_FILE, NEUTRAL_CITY_FILE, TERRAIN_FILE, PLAYER_CAPITAL_FILE, PLAYER_CITY_FILE, ENEMY_CAPITAL_FILE, ENEMY_CITY_FILE
-from map_editor.editor import load_images, load_image
+
+IMAGES_BASE_FILE = Path(__file__).parent.parent / "Tiny Swords" / "Tiny Swords (Update 010)"
+DECORATIONS_DIRECTORY = IMAGES_BASE_FILE / "Deco"
+RESOURCES_DIRECTORY = IMAGES_BASE_FILE / "Resources"
+
+TERRAIN_FILE = IMAGES_BASE_FILE / "Terrain" / "Ground" / "green_tile.png"
+ASSETS_BASE_FILE = IMAGES_BASE_FILE / "Factions" / "Knights"
+
+PLAYER_CITY_FILE = ASSETS_BASE_FILE / "Buildings" / "Tower" / "Tower_Blue.png"
+PLAYER_CAPITAL_FILE = ASSETS_BASE_FILE / "Buildings" / "Castle" / "Castle_Blue.png"
+PLAYER_KNIGHT_FILE = ASSETS_BASE_FILE / "Troops" / "Warrior" / "Blue"
+
+ENEMY_CITY_FILE = ASSETS_BASE_FILE / "Buildings" / "Tower" / "Tower_Red.png"
+ENEMY_CAPITAL_FILE = ASSETS_BASE_FILE / "Buildings" / "Castle" / "Castle_Red.png"
+ENEMY_KNIGHT_FILE = ASSETS_BASE_FILE / "Troops" / "Warrior" / "Red"
+
+NEUTRAL_CITY_FILE = ASSETS_BASE_FILE / "Buildings" / "Tower" / "Tower_yellow.png"
+NEUTRAL_CAPITAL_FILE = ASSETS_BASE_FILE / "Buildings" / "Castle" / "Castle_yellow.png"
+
 
 FILE = Path(__file__)
 WINDOW_SIZE = (1920, 1080)
+def load_image(image_path: Path, size: tuple[int, int] | None = None):
+    image = pygame.image.load(image_path).convert()
+    image.set_colorkey((0, 0, 0))
+    if size is not None:
+        image = pygame.transform.scale(image, size)
+    return image
+
+
+def load_images(images_directory: Path, size: tuple[int, int] | None = None):
+    images = []
+    for image_path in images_directory.glob("*"):
+        images.append(load_image(image_path, size))
+    return images
+
 
 def apply_gaussian_blur(pygame_surface):
     arr = pygame.surfarray.array3d(pygame_surface)
